@@ -4,7 +4,6 @@ const app = express();
 require('dotenv').config();
 app.use(express.static('public'));
 const { sequelize } = require('./models');
-const zonasRouter = require('./routes/zona');  
 
 app.use(cors());
 app.use(express.json());
