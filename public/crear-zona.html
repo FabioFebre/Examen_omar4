@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Zona</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+  <h1>Registrar nueva zona</h1>
+
+  <form id="form-zona">
+    <input type="text" name="nombre" placeholder="Nombre de la zona" required>
+    <button type="submit">Guardar</button>
+  </form>
+
+  <a href="index.html">Volver al inicio</a>
+
+  <script>
+    document.getElementById('form-zona').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('http://localhost:3000/zona', { 
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Zona creada correctamente');
+        } else {
+          alert('Error al crear la zona');
+        }
+        
+        e.target.reset();
+      } catch (error) {
+        console.error(error);
+        alert('Error en la solicitud');
+      }
+    });
+  </script>
+</body>
+</html>

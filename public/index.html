@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clientes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: white;
+      background-color: #007BFF;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background: #007BFF;
+      color: white;
+    }
+    td img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <h1>Listado de Clientes</h1>
+  <a href="crear.html">Crear Cliente</a>
+  <table id="clientes">
+    <thead>
+      <tr>
+        <th>ID</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th>
+        <th>Zona</th><th>Imagen</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="main.js"></script>
+</body>
+</html>

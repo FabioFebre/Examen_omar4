@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Cliente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 350px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+  <h1>Crear Cliente</h1>
+  <form id="form-crear" enctype="multipart/form-data">
+    <input name="nombre" placeholder="Nombre" required><br>
+    <input name="direccion" placeholder="Dirección" required><br>
+    <input name="telefono" placeholder="Teléfono" required><br>
+    <select name="zona_id" required></select><br>
+    <input type="file" name="imagen" accept="image/*"><br>
+    <button type="submit">Guardar</button>
+  </form>
+  <a href="index.html">Volver</a>
+
+  <script>
+    fetch('http://localhost:3000/zonas')  
+    .then(res => res.json())
+    .then(zonas => {
+      const select = document.querySelector('select[name=zona_id]');
+      
+      if (zonas.length > 0) {
+        zonas.forEach(z => {
+          const opt = document.createElement('option');
+          opt.value = z.id;
+          opt.textContent = z.nombre;
+          select.appendChild(opt);
+        });
+      } else {
+        const option = document.createElement('option');
+        option.textContent = 'No hay zonas disponibles';
+        select.appendChild(option);
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar zonas:', error);
+      alert('Hubo un problema al cargar las zonas');
+    });
+
+    document.getElementById('form-crear').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      try {
+        const response = await fetch('http://localhost:3000/clientes', {
+          method: 'POST',
+          body: data
+        });
+
+        if (response.ok) {
+          window.location.href = 'index.html';  
+        } else {
+          alert('Error al crear cliente');
+        }
+      } catch (error) {
+        console.error('Error al enviar formulario:', error);
+        alert('Hubo un problema con la solicitud');
+      }
+    });
+  </script>
+</body>
+</html>
