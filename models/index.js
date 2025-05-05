@@ -6,14 +6,24 @@ const path = require('path');
 require('dotenv').config();
 
 // Crear la instancia de Sequelize
-const sequelize = new Sequelize({
-  host: process.env.DB_HOST,
-  dialect: 'mysql',
-  username: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  logging: false // Desactiva los logs de SQL si no los necesitas
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 5432,
+    dialect: 'postgres', // ✅ CAMBIADO A POSTGRES
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
+    logging: false
+  }
+);
+
 
 // Importar modelos
 const Cliente = require('./cliente')(sequelize, DataTypes);

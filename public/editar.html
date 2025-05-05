@@ -6,76 +6,75 @@
 </head>
 <body>
   <h1>Editar Cliente</h1>
+
   <form id="form-editar" enctype="multipart/form-data">
-    <input name="nombre" placeholder="Nombre" required><br>
-    <input name="direccion" placeholder="Dirección" required><br>
-    <input name="telefono" placeholder="Teléfono" required><br>
-    <select name="zona_id" required>
-      <option value="">Seleccione una zona</option> <!-- Opción por defecto -->
-    </select><br>
-    <input type="file" name="imagen" accept="image/*"><br>
-    <button type="submit">Actualizar</button>
+    <input type="text" name="nombre" id="nombre" placeholder="Nombre" required><br>
+    <input type="text" name="direccion" id="direccion" placeholder="Dirección" required><br>
+    <input type="text" name="telefono" id="telefono" placeholder="Teléfono" required><br>
+    <select name="zona_id" id="zona_id" required></select><br>
+    <input type="file" name="imagen" id="imagen" accept="image/*"><br>
+    <button type="submit">Guardar</button>
   </form>
+  
+  
   <a href="index.html">Volver</a>
 
   <script>
-    // Obtener ID del cliente desde la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const clienteId = urlParams.get('id');
-
-    // Obtener los datos del cliente
+    // Cargar datos del cliente al cargar la página
+    const clienteId = new URLSearchParams(window.location.search).get('id');
+    
     fetch(`http://localhost:3000/clientes/${clienteId}`)
       .then(res => res.json())
       .then(cliente => {
-        // Prellenar el formulario con los datos del cliente
-        document.querySelector('input[name="nombre"]').value = cliente.nombre;
-        document.querySelector('input[name="direccion"]').value = cliente.direccion;
-        document.querySelector('input[name="telefono"]').value = cliente.telefono;
-        
-        // Obtener zonas
-        fetch('http://localhost:3000/zonas')
-          .then(res => res.json())
-          .then(zonas => {
-            const select = document.querySelector('select[name=zona_id]');
-            zonas.forEach(z => {
-              const opt = document.createElement('option');
-              opt.value = z.id;
-              opt.textContent = z.nombre;
-              select.appendChild(opt);
-            });
-
-            // Seleccionar la zona del cliente
-            select.value = cliente.zona_id; // Asegurarse de que el valor del select sea el que corresponde
-          })
-          .catch(error => {
-            console.error('Error al cargar zonas:', error);
-            alert('Hubo un problema al cargar las zonas');
-          });
+        document.getElementById('nombre').value = cliente.nombre;
+        document.getElementById('direccion').value = cliente.direccion;
+        document.getElementById('telefono').value = cliente.telefono;
+        document.getElementById('zona_id').value = cliente.zona_id;
       })
       .catch(error => {
-        console.error('Error al cargar los datos del cliente:', error);
-        alert('Hubo un problema al cargar los datos del cliente');
+        console.error('Error al cargar cliente:', error);
+        alert('Error al cargar los datos del cliente');
       });
 
-    // Enviar el formulario para actualizar el cliente
+    // Cargar las zonas para el select
+    fetch('http://localhost:3000/zonas')
+      .then(res => res.json())
+      .then(zonas => {
+        const select = document.getElementById('zona_id');
+        zonas.forEach(zona => {
+          const option = document.createElement('option');
+          option.value = zona.id;
+          option.textContent = zona.nombre;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error al cargar zonas:', error);
+        alert('Error al cargar las zonas');
+      });
+
+    // Enviar el formulario de actualización
     document.getElementById('form-editar').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = e.target;
-      const data = new FormData(form);
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
 
       try {
         const response = await fetch(`http://localhost:3000/clientes/${clienteId}`, {
           method: 'PUT',
-          body: data,
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
         });
 
         if (response.ok) {
-          window.location.href = 'index.html';  // Redirigir al inicio
+          alert('Cliente actualizado correctamente');
+          window.location.href = 'index.html';  // Redirigir al listado de clientes
         } else {
-          alert('Error al actualizar el cliente');
+          alert('Error al actualizar cliente');
         }
       } catch (error) {
-        console.error('Error al enviar formulario:', error);
+        console.error('Error al enviar el formulario:', error);
         alert('Hubo un problema con la solicitud');
       }
     });

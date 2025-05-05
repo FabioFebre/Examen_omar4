@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const Zona = sequelize.define('Zona', {
+  const Zona = sequelize.define('Zonas', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,

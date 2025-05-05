@@ -49,14 +49,22 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los clientes' });
   }
 });
-
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.single('imagen'), async (req, res) => {
   try {
-    const cliente = await Cliente.findByPk(req.params.id); 
+    const cliente = await Cliente.findByPk(req.params.id);
     if (!cliente) {
       return res.status(404).json({ error: 'Cliente no encontrado' });
     }
 
+    // Si se sube una nueva imagen, asigna su ruta
+    if (req.file) {
+      req.body.imagen = req.file.path;  // Guarda solo la ruta del archivo
+    } else {
+      // Si no se sube una nueva imagen, mantenemos el valor de imagen existente
+      req.body.imagen = cliente.imagen; 
+    }
+
+    // Actualiza los demás campos
     await cliente.update(req.body); 
 
     res.status(200).json(cliente); 
@@ -65,9 +73,12 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Error al actualizar el cliente' });
   }
 });
+
+
+
 router.get('/:id', async (req, res) => {
   try {
-    const cliente = await Cliente.findByPk(req.params.id); // Buscamos el cliente por su ID
+    const cliente = await Cliente.findByPk(req.params.id); 
     if (!cliente) {
       return res.status(404).json({ error: 'Cliente no encontrado' }); // Si no lo encuentra, respondemos con error
     }

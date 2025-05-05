@@ -1,23 +1,20 @@
 // db.js
-const mysql = require('mysql2');
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const connection = mysql.createConnection({
+const pool = new Pool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error('Error de conexión: ' + err.stack);
-    return;
+  password: process.env.DB_PASSWORD,
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false // Importante para conexión con Render
   }
-  console.log('Conectado a la base de datos.');
 });
 
+pool.connect()
+  .then(() => console.log('✅ Conectado a PostgreSQL en Render'))
+  .catch(err => console.error('❌ Error al conectar:', err));
 
-
-
-module.exports = connection;
+module.exports = pool;
