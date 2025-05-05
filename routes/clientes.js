@@ -35,14 +35,20 @@ router.post('/', upload.single('imagen'), async (req, res) => {
 });
 router.get('/', async (req, res) => {
   try {
-    const clientes = await Cliente.findAll(); 
+    const clientes = await Cliente.findAll({
+      include: {
+        model: Zona,
+        as: 'zona',
+        attributes: ['nombre']
+      }
+    });
+
     res.status(200).json(clientes);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener los clientes' });
   }
 });
-
 
 router.put('/:id', async (req, res) => {
   try {
